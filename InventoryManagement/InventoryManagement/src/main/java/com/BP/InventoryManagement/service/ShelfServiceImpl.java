@@ -21,7 +21,7 @@ public class ShelfServiceImpl implements ShelfService {
     @Autowired
     private ShelfPositionRepository shelfPositionRepository;
     @Autowired
-    private DeviceServiceImpl deviceService;
+    private DeviceService deviceService;
 
     @Override
     public ResponseEntity<ShelfPosition> saveShelfPosition(ShelfPosition shelfPosition) {
@@ -59,10 +59,16 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Override
     public ResponseEntity<?> addShelfPositionToDevice(Long deviceId, Long shelfPositionId) {
-        Device device = deviceService.getDevice(deviceId).getBody();
-        Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
-        if (device != null && shelfPosition.isPresent()) {
-            device.getShelfPositions().add(shelfPosition.get());
+        try {
+            Device device = deviceService.getDevice(deviceId).getBody();
+            Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
+            if (device != null && shelfPosition.isPresent()) {
+                device.getShelfPositions().add(shelfPosition.get());
+            }
+            deviceService.saveDevice(device);
+            shelfPositionRepository.save(shelfPosition.get());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -71,7 +77,10 @@ public class ShelfServiceImpl implements ShelfService {
     public ResponseEntity<?> addShelfToShelfPosition(Long shelfId, Long shelfPositionId) {
         ShelfPosition shelfPosition = shelfPositionRepository.findById(shelfPositionId).get();
         Shelf shelf = shelfRepository.findById(shelfId).get();
-        shelfPosition.getShelf().setShelfPosition(shelfPosition);
+        if (shelfPosition != null && shelf != null) {
+            shelfPosition.getShelf().setShelfPosition(shelfPosition);
+        }
+        shelfPositionRepository.save(shelfPosition);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -36,7 +36,7 @@ public class DeviceController {
         return service.deleteDevice(id);
     }
 
-    @GetMapping
+    @GetMapping("/")
     public List<Device> getAllDevices() {
         return service.getAllDevices();
     }
