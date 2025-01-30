@@ -1,9 +1,11 @@
 package com.BP.InventoryManagement.service;
 
 import com.BP.InventoryManagement.model.Device;
+import com.BP.InventoryManagement.model.Shelf;
+import com.BP.InventoryManagement.model.ShelfPosition;
 import org.springframework.http.ResponseEntity;
 
-public interface InventoryService {
+public interface DeviceService {
     ResponseEntity<Device> saveDevice(Device device);
 
     ResponseEntity<Device> getDevice(Long id);
@@ -11,4 +13,5 @@ public interface InventoryService {
     ResponseEntity<Device> modifyDevice(Device device, Long id);
 
     ResponseEntity<Device> deleteDevice(Long id);
+
 }
