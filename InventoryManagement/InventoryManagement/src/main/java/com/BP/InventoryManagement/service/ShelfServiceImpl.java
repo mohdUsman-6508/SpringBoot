@@ -21,7 +21,7 @@ public class ShelfServiceImpl implements ShelfService {
     @Autowired
     private ShelfPositionRepository shelfPositionRepository;
     @Autowired
-    private DeviceService deviceService;
+    private DeviceServiceImpl deviceService;
 
     @Override
     public ResponseEntity<ShelfPosition> saveShelfPosition(ShelfPosition shelfPosition) {
@@ -64,9 +64,10 @@ public class ShelfServiceImpl implements ShelfService {
             Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
             if (device != null && shelfPosition.isPresent()) {
                 device.getShelfPositions().add(shelfPosition.get());
+                shelfPosition.get().setDeviceId(deviceId);
             }
             deviceService.saveDevice(device);
-            shelfPositionRepository.save(shelfPosition.get());
+            shelfPosition.ifPresent(position -> saveShelfPosition(position));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -75,12 +76,18 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Override
     public ResponseEntity<?> addShelfToShelfPosition(Long shelfId, Long shelfPositionId) {
-        ShelfPosition shelfPosition = shelfPositionRepository.findById(shelfPositionId).get();
-        Shelf shelf = shelfRepository.findById(shelfId).get();
-        if (shelfPosition != null && shelf != null) {
-            shelfPosition.getShelf().setShelfPosition(shelfPosition);
+        try {
+            Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
+            Optional<Shelf> shelf = shelfRepository.findById(shelfId);
+            if (shelfPosition.isPresent() && shelf.isPresent()) {
+                shelfPosition.get().setShelf(shelf.get());
+                shelf.get().setShelfPositionId(shelfPositionId);
+                shelfPositionRepository.save(shelfPosition.get());
+                shelfRepository.save(shelf.get());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
-        shelfPositionRepository.save(shelfPosition);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

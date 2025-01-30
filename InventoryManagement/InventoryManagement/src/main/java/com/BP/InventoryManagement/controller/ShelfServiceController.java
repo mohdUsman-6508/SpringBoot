@@ -48,9 +48,14 @@ public class ShelfServiceController {
         return service.getShelfPositionById(id);
     }
 
-    @PostMapping("/addShelfPositionToDevice/{deviceId}/{shelfPostionId}")
+    @PostMapping("/addShelfPositionToDevice/{deviceId}/{shelfPositionId}")
     public ResponseEntity<?> addShelfPositionToDevice(@PathVariable Long deviceId,@PathVariable Long shelfPositionId){
         return service.addShelfPositionToDevice(deviceId,shelfPositionId);
+    }
+
+    @PostMapping("/addShelfToShelfPosition/{shelfId}/{shelfPositionId}")
+    public ResponseEntity<?> addShelfToDevice(@PathVariable Long shelfId,@PathVariable Long shelfPositionId){
+        return service.addShelfToShelfPosition(shelfId,shelfPositionId);
     }
 
 }

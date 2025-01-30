@@ -21,6 +21,4 @@ public class Shelf {
     private String shelfType;
     private Long shelfPositionId;
 
-    @Relationship(type="HAS",direction = Relationship.Direction.INCOMING)
-    private ShelfPosition shelfPosition;
 }
