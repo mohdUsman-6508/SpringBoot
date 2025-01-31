@@ -57,14 +57,19 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(shelfRepository.findAll(), HttpStatus.OK);
     }
 
+
+    // One ShelfPosition can hold only one Device
+    // Add ShelfPosition to Device only when the ShelfPosition does not belong to other device
     @Override
     public ResponseEntity<?> addShelfPositionToDevice(Long deviceId, Long shelfPositionId) {
         try {
             Device device = deviceService.getDevice(deviceId).getBody();
             Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
-            if (device != null && shelfPosition.isPresent()) {
+            if (device != null && shelfPosition.isPresent() && shelfPosition.get().getDeviceId() == null) {
                 device.getShelfPositions().add(shelfPosition.get());
                 shelfPosition.get().setDeviceId(deviceId);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             deviceService.saveDevice(device);
             shelfPosition.ifPresent(position -> saveShelfPosition(position));
@@ -74,16 +79,20 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // One Shelf can hold only one ShelfPosition
+    // Add Shelf to ShelfPosition only when the Shelf does not belong to other ShelfPosition
     @Override
     public ResponseEntity<?> addShelfToShelfPosition(Long shelfId, Long shelfPositionId) {
         try {
             Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
             Optional<Shelf> shelf = shelfRepository.findById(shelfId);
-            if (shelfPosition.isPresent() && shelf.isPresent()) {
+            if (shelfPosition.isPresent() && shelf.isPresent() && shelf.get().getShelfPositionId() == null) {
                 shelfPosition.get().setShelf(shelf.get());
                 shelf.get().setShelfPositionId(shelfPositionId);
                 shelfPositionRepository.save(shelfPosition.get());
                 shelfRepository.save(shelf.get());
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

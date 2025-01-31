@@ -2,6 +2,8 @@ package com.BP.InventoryManagement.service;
 
 import com.BP.InventoryManagement.model.Device;
 import com.BP.InventoryManagement.repository.DeviceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +16,23 @@ import java.util.Optional;
 @Service
 @Component
 public class DeviceServiceImpl implements DeviceService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeviceService.class);
+
     @Autowired
     private DeviceRepository deviceRepository;
 
     @Override
     public ResponseEntity<Device> saveDevice(Device device) {
+        logger.info("Creating device:{}", device.getName() + device.getId() + device.getDeviceType());
+        if (device.getName() == null || device.getName().isEmpty()) {
+            logger.warn("Invalid device");
+            throw new IllegalArgumentException("Device name cannot be empty");
+        }
         try {
-            return new ResponseEntity(deviceRepository.save(device), HttpStatus.CREATED);
+            Device savedDevice = deviceRepository.save(device);
+            logger.debug("Device created with Id:{}", savedDevice.getId());
+            return new ResponseEntity(savedDevice, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
