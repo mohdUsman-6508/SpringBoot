@@ -25,4 +25,5 @@ public class Device {
     @Relationship(type = "HAS", direction = Relationship.Direction.OUTGOING)
     private Set<ShelfPosition> shelfPositions = new HashSet<>();
 
+
 }
