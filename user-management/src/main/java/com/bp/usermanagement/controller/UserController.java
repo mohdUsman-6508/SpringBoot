@@ -32,4 +32,13 @@ public class UserController {
         return userService.saveUser(user);
     }
 
+    @DeleteMapping("/delete-user/{email}")
+    public void deleteUser(@PathVariable String email) {
+        userService.deleteUser(email);
+    }
+
+    @PatchMapping("/update-user/{email}")
+    public User updateUser(@RequestBody User user, @PathVariable String email) {
+        return userService.updateUser(user, email);
+    }
 }
