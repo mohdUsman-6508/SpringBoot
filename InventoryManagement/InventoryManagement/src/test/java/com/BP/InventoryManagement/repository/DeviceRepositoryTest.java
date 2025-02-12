@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataNeo4jTest
 public class DeviceRepositoryTest {
     @Autowired
-    private DeviceRepository deviceRepository;
+    private com.BP.InventoryManagement.repository.DeviceRepository deviceRepository;
     private Device device;
 
     @BeforeEach

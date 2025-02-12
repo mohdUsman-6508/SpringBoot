@@ -5,7 +5,6 @@ import com.BP.InventoryManagement.model.Shelf;
 import com.BP.InventoryManagement.model.ShelfPosition;
 import com.BP.InventoryManagement.repository.ShelfPositionRepository;
 import com.BP.InventoryManagement.repository.ShelfRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,12 +15,15 @@ import java.util.Optional;
 @Service
 public class ShelfServiceImpl implements ShelfService {
 
-    @Autowired
-    private ShelfRepository shelfRepository;
-    @Autowired
-    private ShelfPositionRepository shelfPositionRepository;
-    @Autowired
-    private DeviceServiceImpl deviceService;
+    private final ShelfRepository shelfRepository;
+    private final ShelfPositionRepository shelfPositionRepository;
+    private final DeviceServiceImpl deviceService;
+
+    public ShelfServiceImpl(ShelfRepository shelfRepository, ShelfPositionRepository shelfPositionRepository, DeviceServiceImpl deviceService) {
+        this.shelfRepository = shelfRepository;
+        this.shelfPositionRepository = shelfPositionRepository;
+        this.deviceService = deviceService;
+    }
 
     @Override
     public ResponseEntity<ShelfPosition> saveShelfPosition(ShelfPosition shelfPosition) {
@@ -56,7 +58,6 @@ public class ShelfServiceImpl implements ShelfService {
     public ResponseEntity<List<Shelf>> getShelf() {
         return new ResponseEntity<>(shelfRepository.findAll(), HttpStatus.OK);
     }
-
 
     // One ShelfPosition can hold only one Device
     // Add ShelfPosition to Device only when the ShelfPosition does not belong to other device

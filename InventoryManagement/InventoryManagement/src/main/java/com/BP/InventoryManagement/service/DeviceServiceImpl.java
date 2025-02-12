@@ -4,7 +4,6 @@ import com.BP.InventoryManagement.model.Device;
 import com.BP.InventoryManagement.repository.DeviceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -18,9 +17,11 @@ import java.util.Optional;
 public class DeviceServiceImpl implements DeviceService {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceService.class);
+    private final DeviceRepository deviceRepository;
 
-    @Autowired
-    private DeviceRepository deviceRepository;
+    public DeviceServiceImpl(DeviceRepository deviceRepository) {
+        this.deviceRepository = deviceRepository;
+    }
 
     @Override
     public ResponseEntity<Device> saveDevice(Device device) {
@@ -84,8 +85,12 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
 
-    public List<Device> getAllDevices() {
-        return deviceRepository.findAll();
+    public ResponseEntity<List<Device>> getAllDevices() {
+        try {
+            return new ResponseEntity<>(deviceRepository.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public boolean isDeviceExist(Long id) {

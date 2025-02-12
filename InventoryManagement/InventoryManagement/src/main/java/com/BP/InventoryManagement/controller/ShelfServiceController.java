@@ -2,9 +2,7 @@ package com.BP.InventoryManagement.controller;
 
 import com.BP.InventoryManagement.model.Shelf;
 import com.BP.InventoryManagement.model.ShelfPosition;
-import com.BP.InventoryManagement.service.DeviceServiceImpl;
 import com.BP.InventoryManagement.service.ShelfServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +10,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/shelfService")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class ShelfServiceController {
 
-    @Autowired
-    private ShelfServiceImpl service;
+    private final ShelfServiceImpl service;
+    public ShelfServiceController(ShelfServiceImpl service) {
+        this.service = service;
+    }
 
 
     @PostMapping("/addShelfPosition")
@@ -49,13 +51,13 @@ public class ShelfServiceController {
     }
 
     @PostMapping("/addShelfPositionToDevice/{deviceId}/{shelfPositionId}")
-    public ResponseEntity<?> addShelfPositionToDevice(@PathVariable Long deviceId,@PathVariable Long shelfPositionId){
-        return service.addShelfPositionToDevice(deviceId,shelfPositionId);
+    public ResponseEntity<?> addShelfPositionToDevice(@PathVariable Long deviceId, @PathVariable Long shelfPositionId) {
+        return service.addShelfPositionToDevice(deviceId, shelfPositionId);
     }
 
     @PostMapping("/addShelfToShelfPosition/{shelfId}/{shelfPositionId}")
-    public ResponseEntity<?> addShelfToDevice(@PathVariable Long shelfId,@PathVariable Long shelfPositionId){
-        return service.addShelfToShelfPosition(shelfId,shelfPositionId);
+    public ResponseEntity<?> addShelfToDevice(@PathVariable Long shelfId, @PathVariable Long shelfPositionId) {
+        return service.addShelfToShelfPosition(shelfId, shelfPositionId);
     }
 
 }

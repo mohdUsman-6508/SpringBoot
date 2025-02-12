@@ -1,8 +1,6 @@
 package com.BP.InventoryManagement.service;
 
 import com.BP.InventoryManagement.model.Device;
-import com.BP.InventoryManagement.model.Shelf;
-import com.BP.InventoryManagement.model.ShelfPosition;
 import org.springframework.http.ResponseEntity;
 
 public interface DeviceService {
