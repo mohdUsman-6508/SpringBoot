@@ -19,7 +19,6 @@ public class ShelfServiceController {
         this.service = service;
     }
 
-
     @PostMapping("/addShelfPosition")
     public ResponseEntity<ShelfPosition> addShelfPosition(@RequestBody ShelfPosition shelfPosition) {
         return service.saveShelfPosition(shelfPosition);
@@ -56,7 +55,7 @@ public class ShelfServiceController {
     }
 
     @PostMapping("/addShelfToShelfPosition/{shelfId}/{shelfPositionId}")
-    public ResponseEntity<?> addShelfToDevice(@PathVariable Long shelfId, @PathVariable Long shelfPositionId) {
+    public ResponseEntity<?> addShelfToShelfPosition(@PathVariable Long shelfId, @PathVariable Long shelfPositionId) {
         return service.addShelfToShelfPosition(shelfId, shelfPositionId);
     }
 
