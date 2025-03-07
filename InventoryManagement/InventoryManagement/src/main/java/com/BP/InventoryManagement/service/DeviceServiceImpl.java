@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Device> saveDevice(Device device) {
         logger.info("Creating device:{}", device.getName() + device.getId() + device.getDeviceType());
         if (device.getName() == null || device.getName().isEmpty()) {
@@ -40,6 +42,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<Device> getDevice(Long id) {
         try {
             if (isDeviceExist(id)) {
@@ -52,6 +55,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Device> modifyDevice(Device device, Long id) {
         try {
             if (isDeviceExist(id)) {
@@ -72,6 +76,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Device> deleteDevice(Long id) {
         try {
             if (isDeviceExist(id)) {
@@ -84,12 +89,22 @@ public class DeviceServiceImpl implements DeviceService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
+    @Transactional(readOnly = true)
     public ResponseEntity<List<Device>> getAllDevices() {
         try {
             return new ResponseEntity<>(deviceRepository.findAll(), HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<Device> getDeviceByName(String name) {
+        Optional<Device> device = deviceRepository.findByName(name);
+        if (device.isPresent()) {
+            return ResponseEntity.ok(device.get());
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

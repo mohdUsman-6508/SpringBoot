@@ -1,7 +1,10 @@
 package com.BP.InventoryManagement.controller;
+
 import com.BP.InventoryManagement.model.Device;
 import com.BP.InventoryManagement.service.DeviceServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,18 +16,28 @@ import java.util.List;
 public class DeviceController {
     private final DeviceServiceImpl service;
 
-    public DeviceController(DeviceServiceImpl service){
-        this.service=service;
+    public DeviceController(DeviceServiceImpl service) {
+        this.service = service;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Device> addDevice(@RequestBody Device device) {
+    public ResponseEntity<?> addDevice(@Valid @RequestBody Device device, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getAllErrors()
+            );
+        }
         return service.saveDevice(device);
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Device> getDevice(@PathVariable Long id) {
         return service.getDevice(id);
+    }
+
+    @GetMapping("/get/{name}")
+    public ResponseEntity<Device> getDeviceByName(@PathVariable String name) {
+        return service.getDeviceByName(name);
     }
 
     @PutMapping("/modify/{id}")

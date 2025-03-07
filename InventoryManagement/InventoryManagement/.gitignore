@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore environment files
+.env
+*.env
+config/*.env
+
+# Ignore credentials
+src/assets/credentials.json
+application.properties
+application.yml

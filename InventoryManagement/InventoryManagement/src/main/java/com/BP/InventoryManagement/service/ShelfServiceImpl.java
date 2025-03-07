@@ -8,6 +8,7 @@ import com.BP.InventoryManagement.repository.ShelfRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ShelfPosition> saveShelfPosition(ShelfPosition shelfPosition) {
         try {
             if (shelfPosition != null) {
@@ -37,12 +39,24 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<ShelfPosition> getShelfPositionByName(String name) {
+        Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findByName(name);
+        if (shelfPosition.isPresent()) {
+            return ResponseEntity.ok(shelfPosition.get());
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @Override
+    @Transactional
     public ResponseEntity<List<ShelfPosition>> getShelfPosition() {
         return new ResponseEntity<>(shelfPositionRepository.findAll(), HttpStatus.OK);
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Shelf> saveShelf(Shelf shelf) {
         try {
             if (shelf != null) {
@@ -54,7 +68,19 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Shelf> getShelfByName(String name) {
+        Optional<Shelf> shelf = shelfRepository.findByName(name);
+        if (shelf.isPresent()) {
+            return ResponseEntity.ok(shelf.get());
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<List<Shelf>> getShelf() {
         return new ResponseEntity<>(shelfRepository.findAll(), HttpStatus.OK);
     }
@@ -62,6 +88,7 @@ public class ShelfServiceImpl implements ShelfService {
     // One ShelfPosition can hold only one Device
     // Add ShelfPosition to Device only when the ShelfPosition does not belong to other device
     @Override
+    @Transactional
     public ResponseEntity<?> addShelfPositionToDevice(Long deviceId, Long shelfPositionId) {
         try {
             Device device = deviceService.getDevice(deviceId).getBody();
@@ -83,6 +110,7 @@ public class ShelfServiceImpl implements ShelfService {
     // One Shelf can hold only one ShelfPosition
     // Add Shelf to ShelfPosition only when the Shelf does not belong to other ShelfPosition
     @Override
+    @Transactional
     public ResponseEntity<?> addShelfToShelfPosition(Long shelfId, Long shelfPositionId) {
         try {
             Optional<ShelfPosition> shelfPosition = shelfPositionRepository.findById(shelfPositionId);
@@ -112,6 +140,7 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<ShelfPosition> getShelfPositionById(Long id) {
         try {
             if (isShelfPositionExist(id)) {
