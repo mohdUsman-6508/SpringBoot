@@ -112,4 +112,10 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceRepository.findById(id).isPresent();
     }
 
+    public ResponseEntity<Device> getDeviceByType(String deviceType) {
+        Optional<Device> d = deviceRepository.findByDeviceType(deviceType);
+        if (d.isPresent()) return ResponseEntity.ok(d.get());
+        else return ResponseEntity.notFound().build();
+    }
+
 }

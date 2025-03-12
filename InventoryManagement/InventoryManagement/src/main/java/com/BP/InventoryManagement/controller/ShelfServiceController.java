@@ -2,6 +2,7 @@ package com.BP.InventoryManagement.controller;
 
 import com.BP.InventoryManagement.model.Shelf;
 import com.BP.InventoryManagement.model.ShelfPosition;
+import com.BP.InventoryManagement.repository.ShelfSummary;
 import com.BP.InventoryManagement.service.ShelfServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -83,14 +84,18 @@ public class ShelfServiceController {
     }
 
     @PostMapping("/addShelfToShelfPosition/{shelfId}/{shelfPositionId}")
-    public ResponseEntity<?> addShelfToShelfPosition(@Valid @PathVariable Long shelfId, @PathVariable Long shelfPositionId,BindingResult result) {
-       if(result.hasErrors()){
-           return ResponseEntity.badRequest().body(
-                   result.getAllErrors()
-           );
-       }
+    public ResponseEntity<?> addShelfToShelfPosition(@Valid @PathVariable Long shelfId, @PathVariable Long shelfPositionId, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getAllErrors()
+            );
+        }
         return service.addShelfToShelfPosition(shelfId, shelfPositionId);
     }
 
+    @GetMapping("/shelfSummary/{shelfId}")
+    public ResponseEntity<Object> getShelfSummary(@PathVariable Long shelfId) {
+        return service.getShelfSummary(shelfId);
+    }
 }
 

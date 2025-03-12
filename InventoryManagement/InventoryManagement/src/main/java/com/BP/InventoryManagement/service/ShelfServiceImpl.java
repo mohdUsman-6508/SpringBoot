@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ShelfServiceImpl implements ShelfService {
@@ -78,7 +80,6 @@ public class ShelfServiceImpl implements ShelfService {
         }
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<List<Shelf>> getShelf() {
@@ -129,6 +130,7 @@ public class ShelfServiceImpl implements ShelfService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<Shelf> getShelfById(Long id) {
         try {
             if (isShelfExist(id)) {
@@ -158,5 +160,16 @@ public class ShelfServiceImpl implements ShelfService {
 
     public boolean isShelfPositionExist(Long id) {
         return shelfPositionRepository.findById(id).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ResponseEntity<Object> getShelfSummary(Long shelfId) {
+        Optional<Object> shelfSummary = shelfRepository.getShelfSummary(shelfId);
+        if (shelfSummary.isPresent()) {
+            return ResponseEntity.ok(shelfSummary.stream().toList().get(0).toString().split(","));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

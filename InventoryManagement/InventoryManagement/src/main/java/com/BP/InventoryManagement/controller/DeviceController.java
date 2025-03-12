@@ -30,12 +30,12 @@ public class DeviceController {
         return service.saveDevice(device);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/get/id/{id}")
     public ResponseEntity<Device> getDevice(@PathVariable Long id) {
         return service.getDevice(id);
     }
 
-    @GetMapping("/get/{name}")
+    @GetMapping("/get/name/{name}")
     public ResponseEntity<Device> getDeviceByName(@PathVariable String name) {
         return service.getDeviceByName(name);
     }
@@ -53,6 +53,11 @@ public class DeviceController {
     @GetMapping("/")
     public ResponseEntity<List<Device>> getAllDevices() {
         return service.getAllDevices();
+    }
+
+    @GetMapping("/get/type/{type}")
+    public ResponseEntity<Device> getDeviceByType(@PathVariable String type) {
+        return service.getDeviceByType(type);
     }
 
 }
