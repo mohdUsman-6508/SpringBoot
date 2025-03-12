@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ShelfServiceImpl implements ShelfService {
@@ -164,12 +163,14 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<Object> getShelfSummary(Long shelfId) {
-        Optional<Object> shelfSummary = shelfRepository.getShelfSummary(shelfId);
-        if (shelfSummary.isPresent()) {
-            return ResponseEntity.ok(shelfSummary.stream().toList().get(0).toString().split(","));
+
+    public ResponseEntity<List<Map<String, Object>>> getShelfSummary(Long shelfId) {
+        List<Map<String, Object>> shelfSummary = shelfRepository.getShelfSummary(shelfId);
+        if (shelfSummary != null && !shelfSummary.isEmpty()) {
+            return ResponseEntity.ok(shelfSummary);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

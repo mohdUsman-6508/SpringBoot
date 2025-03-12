@@ -2,7 +2,6 @@ package com.BP.InventoryManagement.controller;
 
 import com.BP.InventoryManagement.model.Shelf;
 import com.BP.InventoryManagement.model.ShelfPosition;
-import com.BP.InventoryManagement.repository.ShelfSummary;
 import com.BP.InventoryManagement.service.ShelfServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shelfService")
@@ -94,7 +94,7 @@ public class ShelfServiceController {
     }
 
     @GetMapping("/shelfSummary/{shelfId}")
-    public ResponseEntity<Object> getShelfSummary(@PathVariable Long shelfId) {
+    public ResponseEntity<List<Map<String,Object>>> getShelfSummary(@PathVariable Long shelfId) {
         return service.getShelfSummary(shelfId);
     }
 }

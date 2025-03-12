@@ -2,10 +2,10 @@ package com.BP.InventoryManagement.service;
 
 import com.BP.InventoryManagement.model.Shelf;
 import com.BP.InventoryManagement.model.ShelfPosition;
-import com.BP.InventoryManagement.repository.ShelfSummary;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ShelfService {
 
@@ -21,5 +21,5 @@ public interface ShelfService {
 
     ResponseEntity<?> addShelfToShelfPosition(Long shelfId, Long shelfPositionId);
 
-    ResponseEntity<Object> getShelfSummary(Long shelfId);
+    ResponseEntity<List<Map<String, Object>>> getShelfSummary(Long shelfId);
 }
