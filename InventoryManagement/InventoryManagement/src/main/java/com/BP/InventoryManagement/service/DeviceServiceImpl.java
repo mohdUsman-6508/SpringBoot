@@ -1,7 +1,9 @@
 package com.BP.InventoryManagement.service;
 
 import com.BP.InventoryManagement.model.Device;
+import com.BP.InventoryManagement.model.ShelfPosition;
 import com.BP.InventoryManagement.repository.DeviceRepository;
+import com.BP.InventoryManagement.repository.ShelfPositionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Component
@@ -19,9 +22,11 @@ public class DeviceServiceImpl implements DeviceService {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceService.class);
     private final DeviceRepository deviceRepository;
+    private final ShelfPositionRepository shelfPositionRepository;
 
-    public DeviceServiceImpl(DeviceRepository deviceRepository) {
+    public DeviceServiceImpl(DeviceRepository deviceRepository, ShelfPositionRepository shelfPositionRepository) {
         this.deviceRepository = deviceRepository;
+        this.shelfPositionRepository = shelfPositionRepository;
     }
 
     @Override
@@ -80,6 +85,12 @@ public class DeviceServiceImpl implements DeviceService {
     public ResponseEntity<Device> deleteDevice(Long id) {
         try {
             if (isDeviceExist(id)) {
+                Optional<Device> device = deviceRepository.findById(id);
+                Set<ShelfPosition> shelfPositions = device.get().getShelfPositions();
+                for (ShelfPosition shelfPosition : shelfPositions) {
+                    shelfPosition.setDeviceId(null);
+                    shelfPositionRepository.save(shelfPosition);
+                }
                 deviceRepository.deleteById(id);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
